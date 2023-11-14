@@ -21,5 +21,15 @@ exit(0); /* Exit on Ctrl+D (end of file) */
  */
 void cleanInput(char *input)
 {
-input[strcspn(input, "\n")] = '\0';
+int i = 0;
+while (input[i] != '\0')
+{
+if (input[i] == '\n')
+{
+input[i] = '\0';
+/* Stop iterating after replacing the first newline character */
+break;
+}
+i++;
+}
 }
