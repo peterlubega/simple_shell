@@ -30,6 +30,13 @@ fflush(stdout);
 readUserInput(input, MAX_COMMAND_LENGTH);
 cleanInput(input);
 
+/* Check for the exit command */
+if (strcmp(input, "exit") == 0)
+{
+printf("Exiting the shell...\n");
+exit(0);
+}
+
 child_pid = createChildProcess();
 
 if (child_pid == -1)
@@ -60,5 +67,5 @@ waitForChildProcess(child_pid);
 }
 }
 
-return 0;
+return (0);
 }
