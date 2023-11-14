@@ -39,10 +39,18 @@ exit(1);
 }
 else if (child_pid == 0)
 {
-char *args[2];
-args[0] = strtok(input, " ");
-args[1] = NULL;
+/* Split the input into command and arguments */
+char *args[MAX_COMMAND_LENGTH];
+int i = 0;
+args[i] = strtok(input, " ");
 
+while (args[i] != NULL)
+{
+i++;
+args[i] = strtok(NULL, " ");
+}
+
+/* Call executeCommand with the command and arguments */
 executeCommand(args[0], args);
 exit(1);
 }
@@ -52,5 +60,5 @@ waitForChildProcess(child_pid);
 }
 }
 
-return (0);
+return 0;
 }
