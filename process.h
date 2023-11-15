@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+extern char **environ;
+
 /* Function declarations */
 pid_t createChildProcess(void);
 void executeCommand(const char *command, char *const args[]);

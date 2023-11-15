@@ -6,37 +6,13 @@
 #include "error.h"
 #include "process.h"
 
-extern char **environ;
-
 /**
- * createChildProcess - Creates a child process using fork().
- *
- * Return: The PID of the child process for the parent, or 0 for the child.
- */
-pid_t createChildProcess(void)
-{
-return (fork());
-}
-
-/**
- * waitForChildProcess - Waits for the child process to finish.
- * @childPid: The PID of the child process to wait for.
- */
-void waitForChildProcess(pid_t childPid __attribute__((unused)))
-{
-int status;
-waitpid(childPid, &status, 0);
-}
-
-/**
- * executeCommand - Executes a command with arguments in the child process.
+ * executeAbsolutePath - Executes a command with an absolute path
+ * in the child process.
  * @command: The command to execute.
  * @args: An array of arguments for the command.
  */
-void executeCommand(const char *command, char *const args[])
-{
-/* Check if the command is an absolute path */
-if (strchr(command, '/') != NULL)
+static void executeAbsolutePath(const char *command, char *const args[])
 {
 pid_t child_pid = fork();
 
@@ -60,15 +36,38 @@ else
 waitpid(child_pid, NULL, 0);
 }
 }
-else
 
-
+/**
+ * executeCommandInChild - Executes a command in the child process.
+ * @commandPath: The full path of the command to execute.
+ * @args: An array of arguments for the command.
+ */
+static void executeCommandInChild(const char *commandPath, char *const args[])
 {
-/* Find the command in the PATH */
+printf("Executing: %s\n", commandPath);
+execve(commandPath, args, environ);
+/* If execve fails, report an error */
+perror("execve");
+exit(1);
+}
+
+/**
+ * findAndExecuteCommand - Finds a command in the PATH and executes
+ * it in the child process.
+ *
+ * This function searches for the specified command in the directories listed
+ * in the PATH environment variable.
+ * If the command is found, it is executed in a child process.
+ *
+ * @command: The command to execute.
+ * @args: An array of arguments for the command.
+ * Return: 1 if the command is found and executed successfully, 0 otherwise.
+ */
+static int findAndExecuteCommand(const char *command, char *const args[])
+{
 char *path = getenv("PATH");
 char *token;
-char commandPath[1024];  /* Assuming a maximum path length */
-int found = 0;
+char commandPath[1024]; /* Assuming a maximum path length */
 
 token = strtok(path, ":");
 
@@ -91,28 +90,53 @@ exit(1);
 else if (child_pid == 0)
 {
 /* In the child process */
-printf("Executing: %s\n", commandPath);
-execve(commandPath, args, environ);
-/* If execve fails, report an error */
-perror("execve");
-exit(1);
+executeCommandInChild(commandPath, args);
 }
 else
 {
 /* In the parent process */
 waitpid(child_pid, NULL, 0);
-found = 1;
-break;  /* Break after waiting for the child process */
+return (1); /* Command found and executed */
 }
 }
 
 token = strtok(NULL, ":");
 }
+
+return (0); /* Command not found */
+}
+
+/**
+ * executeInPath - Executes a command found in the PATH in the child process.
+ * @command: The command to execute.
+ * @args: An array of arguments for the command.
+ */
+static void executeInPath(const char *command, char *const args[])
+{
+int found = findAndExecuteCommand(command, args);
+
 if (!found)
 {
-/* If the loop completes, the command was not found */
 fprintf(stderr, "Command not found: %s\n", command);
 exit(1);
 }
+}
+
+/**
+ * executeCommand - Executes a command with arguments in the child process.
+ * @command: The command to execute.
+ * @args: An array of arguments for the command.
+ */
+void executeCommand(const char *command, char *const args[])
+{
+/* Check if the command is an absolute path */
+if (strchr(command, '/') != NULL)
+{
+executeAbsolutePath(command, args);
+}
+else
+{
+/* Find the command in the PATH */
+executeInPath(command, args);
 }
 }
