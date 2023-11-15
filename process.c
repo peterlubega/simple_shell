@@ -24,7 +24,6 @@ exit(1);
 else if (child_pid == 0)
 {
 /* In the child process */
-printf("Executing: %s\n", command);
 execve(command, args, NULL);
 /* If execve fails, report an error */
 perror("execve");
@@ -44,7 +43,6 @@ waitpid(child_pid, NULL, 0);
  */
 static void executeCommandInChild(const char *commandPath, char *const args[])
 {
-printf("Executing: %s\n", commandPath);
 execve(commandPath, args, environ);
 /* If execve fails, report an error */
 perror("execve");

@@ -15,7 +15,6 @@
  */
 void handleExitCommand(void)
 {
-printf("Exiting the shell...\n");
 exit(0);
 }
 
