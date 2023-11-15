@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /* Function declarations */
-void readUserInput(char* input, int maxLength);
-void cleanInput(char* input);
+void readUserInput(char *input, int maxLength);
+void cleanInput(char *input);
 
 #endif

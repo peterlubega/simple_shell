@@ -4,6 +4,6 @@
 #include <stdio.h>
 
 /* Function declarations */
-void reportError(const char* errorMessage);
+void reportError(const char *errorMessage);
 
 #endif

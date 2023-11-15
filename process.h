@@ -6,8 +6,8 @@
 #include <sys/wait.h>
 
 /* Function declarations */
-pid_t createChildProcess();
-void executeCommand(const char* command, char* const args[]);
+pid_t createChildProcess(void);
+void executeCommand(const char *command, char *const args[]);
 void waitForChildProcess(pid_t childPid);
 
 #endif
