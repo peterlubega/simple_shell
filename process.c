@@ -27,7 +27,7 @@ else if (child_pid == 0)
 execve(command, args, NULL);
 /* If execve fails, report an error */
 perror("execve");
-_exit(1);
+_exit(2);
 }
 else
 {
@@ -117,7 +117,7 @@ int found = findAndExecuteCommand(command, args);
 if (!found)
 {
 fprintf(stderr, "./hsh: 1: %s: not found\n", command);
-exit(2);
+exit(1);
 }
 }
 
