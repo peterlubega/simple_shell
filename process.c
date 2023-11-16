@@ -94,7 +94,8 @@ else
 {
 /* In the parent process */
 waitpid(child_pid, NULL, 0);
-return (1); /* Command found and executed */
+return (1); 
+/* Command found and executed */
 }
 }
 
@@ -115,8 +116,8 @@ int found = findAndExecuteCommand(command, args);
 
 if (!found)
 {
-fprintf(stderr, "Command not found: %s\n", command);
-exit(1);
+fprintf(stderr, "./hsh: 1: %s: not found\n", command);
+exit(2);
 }
 }
 
