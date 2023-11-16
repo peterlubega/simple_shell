@@ -72,7 +72,6 @@ char input[MAX_COMMAND_LENGTH];
 
 while (1)
 {
-printf("$ ");
 fflush(stdout);
 
 readUserInput(input, MAX_COMMAND_LENGTH);
